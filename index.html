@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>Today's Attendance - {{ now.strftime("%A, %B %d, %Y") }}</h2>
+        </div>
+        <div class="col-md-4 text-end">
+            <span class="badge bg-success">Present: {{ attendance|selectattr('status', 'equalto', 'Present')|list|length }}</span>
+            <span class="badge bg-warning text-dark">Late: {{ attendance|selectattr('status', 'equalto', 'Late')|list|length }}</span>
+            <span class="badge bg-danger">Absent: {{ attendance|selectattr('status', 'equalto', 'Absent')|list|length }}</span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card attendance-table">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Timestamp</th>
+                                    <th>Status</th>
+                                    <th>Day</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for record in attendance %}
+                                <tr class="{{ 'present' if record.Status == 'Present' else 'late' if record.Status == 'Late' else 'absent' }}">
+                                    <td>{{ record.Name }}</td>
+                                    <td>{{ record.Timestamp if record.Timestamp != '-' else '-' }}</td>
+                                    <td>
+                                        <span class="badge rounded-pill {{ 'bg-success' if record.Status == 'Present' else 'bg-warning text-dark' if record.Status == 'Late' else 'bg-danger' }}">
+                                            {{ record.Status }}
+                                        </span>
+                                    </td>
+                                    <td>{{ record.Day }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card video-container">
+                <div class="card-body">
+                    <h5 class="card-title">Live Camera Feed</h5>
+                    <img src="{{ url_for('video_feed') }}" class="img-fluid rounded" alt="Live Feed">
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">Student Bios</h5>
+                    <div class="list-group">
+                        {% for name, bio in student_bios.items() %}
+                        <div class="list-group-item student-card" data-bs-toggle="modal" data-bs-target="#bioModal{{ loop.index }}">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ name }}</h6>
+                                <small>{{ bio.department }}</small>
+                            </div>
+                            <p class="mb-1">Roll No: {{ bio.roll_no }}</p>
+                        </div>
+
+                        <!-- Bio Modal -->
+                        <div class="modal fade" id="bioModal{{ loop.index }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">{{ name }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="text-center mb-3">
+                                            <img src="{{ url_for('static', filename='uploads/' + bio.photo) }}" class="img-thumbnail" style="max-height: 200px;">
+                                        </div>
+                                        <p><strong>Roll No:</strong> {{ bio.roll_no }}</p>
+                                        <p><strong>Department:</strong> {{ bio.department }}</p>
+                                        <p><strong>Email:</strong> {{ bio.email }}</p>
+                                        <p><strong>Phone:</strong> {{ bio.phone }}</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

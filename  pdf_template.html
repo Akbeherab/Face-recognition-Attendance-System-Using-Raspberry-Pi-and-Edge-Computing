@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Attendance Report - {{ now.strftime("%Y-%m-%d") }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        h1 { color: #2c3e50; text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .present { background-color: #d4edda; }
+        .late { background-color: #fff3cd; }
+        .absent { background-color: #f8d7da; }
+    </style>
+</head>
+<body>
+    <h1>Attendance Report - {{ now.strftime("%A, %B %d, %Y") }}</h1>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Timestamp</th>
+                <th>Status</th>
+                <th>Day</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in attendance %}
+            <tr class="{{ record.Status|lower|replace(' ', '-') }}">
+                <td>{{ record.Name }}</td>
+                <td>{{ record.Timestamp if record.Timestamp != '-' else '-' }}</td>
+                <td>{{ record.Status }}</td>
+                <td>{{ record.Day }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <p style="margin-top: 30px; text-align: right;">
+        Generated on: {{ now.strftime("%Y-%m-%d %H:%M:%S") }}
+    </p>
+</body>
+</html>

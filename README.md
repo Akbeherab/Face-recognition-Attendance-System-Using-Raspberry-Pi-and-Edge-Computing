@@ -1,6 +1,5 @@
 # Face-recognition-Attendance-System-Using-Raspberry-Pi-and-Edge-Computing
-
-[System Demo](demo.gif)
+![CAD design](./large.png)
 
 
 A complete automated attendance tracking system using real-time face recognition technology, built with Python, Flask, and OpenCV. This system eliminates manual attendance processes by automatically detecting and recognizing students' faces, marking attendance with timestamps, and generating detailed reports.
